@@ -2,9 +2,9 @@
 
 > **This is your portfolio.** Everything you build, hand in and learn during the minor lives here.
 
-- **Name:** Bob
-- **Student number:** _your student number here_
-- **Cohort / year:** _e.g. 2026-2027_
+- **Name:** Majed Al-Sakkaf
+- **Student number:** _23121386_
+- **Cohort / year:** _2026-2027_
 
 ---
 
