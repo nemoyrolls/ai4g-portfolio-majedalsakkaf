@@ -6,7 +6,7 @@
 
 **Project title:** Hio
 
-**Team:** [names]
+**Team:** Lucas - Sofiia - Majed
 
 **Tool we had to use:** n8n
 
@@ -35,7 +35,7 @@ Voice notes are transcribed with Whisper, so the whole thing works by speaking.
 
 ## Link to the live thing
 
-[demo video link] · workflow export: `hio-workflow.json` in this repo.
+Demo : https://youtu.be/ho2NQSi0Lvo?si=rEgZoEyHMCi4ZBYU· workflow export: `hio-workflow.json` in this repo.
 
 ## How do I run it?
 
@@ -58,7 +58,7 @@ Claude Haiku 4.5 powers the conversation, the onboarding, the crisis check and t
 
 ## Who did what?
 
-[fill in]
+Lucas developed the technical N8N workflow and integrations. Sofiia handled the conceptualization, project descriptions, and setup workflows, while Majed was doing  presentation design and testing
 
 ## Ethical reflection: what are the risks, and who could get hurt?
 
