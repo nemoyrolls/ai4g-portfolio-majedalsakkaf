@@ -105,4 +105,4 @@ Tested with Python 3.13, pandas 2.3.3, numpy 2.3.5, scikit-learn 1.7.2, matplotl
 - **Majed:** README, ethical reflection and presentation.
 - **Akif:** the notebook (coding), sharing progress along the way.
 
-We used an AI assistant to help with code and text, which the brief allows. Every choice in the notebook is ours and we can explain it.
+
