@@ -4,21 +4,21 @@ Our model doesn't decide about one person, but it can influence where public mon
 
 ## Who is in the data and who is missing
 
-**Rich countries are over-represented.**
+Rich countries are over-represented
 42% of our rows are high-income countries and only 6% are low-income. Poorer countries report hotel rooms less often, so many of them drop out.
 
 What that means: the model learned mostly from rich countries like Denmark and the Netherlands, but the ministries that need help most are in poorer countries. The population in our data doesn't match the population we want to use it for.
 
 What we did: we checked performance for every income group instead of reporting one score. We state in the README that low-income countries need extra checks.
 
-**Countries in conflict are almost invisible.**
+Countries in conflict are almost invisible
 Countries at war often stop reporting. The few that are in the data, like Iraq, Yemen and Syria around 2000, are among the model's most confident mistakes. The model knows nothing about wars or sanctions.
 
 What that means: for fragile countries the model can look confident while being blind to the biggest risk.
 
 What we would do next: add a conflict or political stability indicator, or exclude fragile states from the model's scope.
 
-**Domestic tourists, Airbnb and everything after 2017.**
+Domestic tourists, Airbnb and everything after 2017
 Revenue only counts foreign visitors. Rooms only count hotels. Short-term rentals grew a lot after 2015, and Eurostat platform data only starts in 2018. COVID forced us to stop at 2017.
 
 What that means: a country where domestic tourism or rentals are growing looks worse than it is. And tourism after COVID may follow different rules.
