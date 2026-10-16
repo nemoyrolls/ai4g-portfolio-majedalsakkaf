@@ -1,0 +1,83 @@
+HONEST TEST: 50 posts labelled by hand, compared with two models
+
+Our labels: {'negative': 18, 'positive': 10, 'neutral': 22}
+Our stance labels: {'against': 3, 'unclear': 25, 'for': 22}
+
+Transformer (cardiffnlp/twitter-roberta-base-sentiment-latest)
+  agrees with us on 36/50 posts = 72%
+  negative  we labelled 18, model said 17, both 13  (found 72% of ours; 76% of its 'negative' were right)
+  neutral   we labelled 22, model said 23, both 16  (found 73% of ours; 70% of its 'neutral' were right)
+  positive  we labelled 10, model said 10, both  7  (found 70% of ours; 70% of its 'positive' were right)
+  confusion table (rows = our label, columns = model):
+  model label  negative  neutral  positive
+  our label                               
+  negative           13        4         1
+  neutral             4       16         2
+  positive            0        3         7
+
+VADER (word-list baseline)
+  agrees with us on 24/50 posts = 48%
+  negative  we labelled 18, model said 11, both  8  (found 44% of ours; 73% of its 'negative' were right)
+  neutral   we labelled 22, model said  9, both  8  (found 36% of ours; 89% of its 'neutral' were right)
+  positive  we labelled 10, model said 30, both  8  (found 80% of ours; 27% of its 'positive' were right)
+  confusion table (rows = our label, columns = model):
+  model label  negative  neutral  positive
+  our label                               
+  negative            8        0        10
+  neutral             2        8        12
+  positive            1        1         8
+
+Both right: 19 | only transformer right: 17 | only VADER right: 5 | both wrong: 9
+
+TONE IS NOT OPINION: model label vs our stance label
+  my_stance    against  for  unclear
+  model_label                       
+  negative           2    7        8
+  neutral            1    9       13
+  positive           0    6        4
+  Of the 17 posts the model scored negative, 7 were written by someone FOR heat pumps (41%).
+  Of the 18 posts WE labelled negative, 7 were FOR heat pumps.
+
+POSTS WHERE THE TRANSFORMER DISAGREES WITH US (candidates for the failure examples)
+
+  #1  ours: negative (stance against) | transformer: neutral -0.12 | VADER: positive +0.36
+  "Attached is the cost to convert an ordinary three-bed semi from a combi gas boiler to an air-source heat pump. The BUS is the difference between a it being a viable alternative to a gas boiler, and being a luxury for a tiny minority of wealthy eco-minded people."
+
+  #2  ours: negative (stance unclear) | transformer: neutral -0.10 | VADER: positive +0.10
+  "Ministers preparing to slash heat pump subsidies to fund defence spending. Some of £2bn savings needed from energy budget expected to come from boiler upgrade scheme, sources say."
+
+  #6  ours: negative (stance unclear) | transformer: positive +0.58 | VADER: negative -0.54
+  "But I'm still paying off the heat pump through 7 year no interest loan, so $336 every month for next 3.5 years!"
+
+  #7  ours: negative (stance unclear) | transformer: neutral +0.12 | VADER: positive +0.71
+  "More importantly, the scheme was meant to encourage people to switch to heat pumps. That obviously must include the middle class."
+
+  #8  ours: positive (stance for) | transformer: neutral +0.11 | VADER: neutral +0.00
+  "heat pump water heaters >>> resistive. that’s on my short term list"
+
+  #9  ours: negative (stance for) | transformer: neutral -0.08 | VADER: positive +0.39
+  "Are they going to m date heat pumps in all new builds? Look at district heating schemes, heat capture from industrial processes, sewage works, mine shafts etc etc. Lots of solutions are possible if you not bothered about keeping big oilhappy."
+
+  #14  ours: neutral (stance for) | transformer: negative -0.66 | VADER: neutral +0.00
+  "I can't wait until I can get a heat pump installed in this place but until then it's propane and wood and plastic film on the windows."
+
+  #15  ours: neutral (stance unclear) | transformer: negative -0.45 | VADER: positive +0.27
+  ""Wow, that's a lot of house for very little money, and the previous owner installed a heat pump," I frequently say as I look at real estate listings for a town that is otherwise defined as "ah, I see that place that traumatized me is a vacant lot now, repeat sentiment 20 more times"."
+
+  #17  ours: neutral (stance unclear) | transformer: positive +0.68 | VADER: positive +0.74
+  "True, on demand to heat pump hot water tank...which I suspect you have looked at. Good luck!"
+
+  #33  ours: positive (stance for) | transformer: neutral +0.39 | VADER: positive +0.53
+  "I turned my ~£500 a month energy bill for gas, electricity and diesel for my car into a < £80 a month bill for electricity and a little bit of gas, by getting a heat pump, solar, batteries, Octopus smart tariffs and an EV. That'll all pay for itself inside the first 6 years."
+
+  #36  ours: neutral (stance unclear) | transformer: negative -0.50 | VADER: positive +0.60
+  "Update the Strata Property Act to allow heat pumps. ENDORSED by both LMLGA and UBCM, sending a signal to the province that people still face challenges. The province has declined to date to make changes, citing that they are "aware of the barriers strata owners can face". More work is needed. /2"
+
+  #42  ours: neutral (stance unclear) | transformer: negative -0.66 | VADER: neutral +0.00
+  "Fridges and air conditioners are one-way heat pumps. I wonder how the hackers did this."
+
+  #46  ours: neutral (stance unclear) | transformer: positive +0.54 | VADER: neutral +0.00
+  "#TechRadar #Tech New add-on for Octopus heat pumps gives you air conditioning for just £500"
+
+  #50  ours: positive (stance for) | transformer: neutral +0.20 | VADER: negative -0.10
+  "Having switched to e-bikes/ev with solar over 4 years ago was a life changer. Gas station signs are invisible to me, completely disregarded by my mind as irrelevant information, like how your eyes don't track/avoid online banner ads. Currently in the process of trying to go heat pump before winter."
