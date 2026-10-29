@@ -1,99 +1,51 @@
-# AI for Good - Student Portfolio
+# Flower Welfare
 
-> **This is your portfolio.** Everything you build, hand in and learn during the minor lives here.
+Hackathon 7, Eyes on Earth. Majed Al-Sakkaf and Sandra Wandel.
 
-- **Name:** Majed Al-Sakkaf
-- **Student number:** _23121386_
-- **Cohort / year:** _2026-2027_
+**What it does:** upload a photo of a flowerbed. A Roboflow object-detection model draws a box around each flower and labels it **Healthy** or **Wilted**, and the app shows the counts and the share of Healthy flowers.
+**App:** [`app.py`](app.py) (Streamlit) · **Ethical reflection:** [`ETHICS.md`](ETHICS.md)
 
----
+## Who it is for, and why SDG 15
 
-## Start here (5 minutes)
+**User:** a green-space ecologist at the **Gemeente Den Haag**, which is adding flower meadows and wants nature-friendly mowing of grass and verges [7]. In the flowering season, they use the Healthy share to decide where to **water, delay mowing or reseed first**. It is a first screen, never a reason to remove wilted flowers. **Not for:** private gardeners, plant disease or species diagnosis, or any automatic mowing or clearing decision.
 
-1. Click the green **Use this template** button at the top of this repository, then **Create a new repository**.
-   (If your teacher told you to fork instead, use **Fork** - either works.)
-2. Name it something like `ai4g-portfolio-yourname` and make it **Public** *(or Private - then invite your teachers as collaborators)*.
-3. Clone it to your laptop:
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/ai4g-portfolio-yourname.git
-   ```
-4. Fill in your name at the top of this file, then commit and push:
-   ```bash
-   git add . && git commit -m "Set up my portfolio" && git push
-   ```
-5. Add work **every week**. Do not leave it all until the deadline - an empty repo with one giant commit the night before is very visible.
+**Why they need it:** Den Haag did not monitor the quality of its green maintenance before 2024, while making more than €225 million available for green since 2016 [8]. About 60% of Dutch municipalities work on ecological verge management [9]. **Why not just a site visit?** Visits stay the final check, but photos let one ecologist triage many beds first.
 
----
+**SDG 15, target 15.5:** "Take urgent and significant action to reduce the degradation of natural habitats, halt the loss of biodiversity…" [3]. 181 of the 331 Dutch wild bee species (55%) are on the Red List [1], and in the EU 1 in 3 bee, butterfly and hoverfly species is disappearing [2]. Our model only checks visible flower condition, not biodiversity or pollinators.
 
-## How this repository is organised
+## Data, model and results
 
-```
-Term 1/
-|-- Week 1/  ...  Week 10/     <- one folder per week
-|   |-- homework/              <- your workshop + homework files
-|   |-- hackathon/             <- the code of that week's hackathon prototype
-|   +-- presentation/          <- slides + demo proof (the week you present)
-+-- Learning Goals/            <- your three learning goals for Term 2
+| | |
+|---|---|
+| **Photos** | 317: 197 from [iNaturalist](https://www.inaturalist.org) (filtered to the Netherlands), 120 from [Wikimedia Commons](https://commons.wikimedia.org) (dead, wilting and dried flowers) [5] |
+| **Labelling** | 30 photos by hand; Roboflow auto-labelled the rest, and every auto-label was approved, changed or discarded by hand |
+| **Model** | Roboflow RF-DETR Object Detection [6], classes Healthy and Wilted [5] |
+| **Split** | 224 train · 65 valid · 28 test photos; training photos augmented to 432 images [5] |
+| **Licences** | iNaturalist photos default to CC BY-NC: credit required, no commercial use [4] |
+| **Test set** | mAP@50 59.3% · precision 66.2% · recall 53.9% · F1 57.8% [5] |
 
-Term 2/
-+-- Week 11/  ...  Week 20/    <- Big Project + learning-goal work
-```
+It misses almost half of the flowers, and about 1 in 3 boxes is wrong. With 28 test images these numbers are rough. In our tests it missed most flowers in a dense heath field and skipped buds.
 
-Every folder has its own `README.md` with a short template. **Fill those in** - they are how your teacher reads your portfolio.
+## How to run
 
----
+1. `pip install -r requirements.txt`
+2. `streamlit run app.py`
+3. In the sidebar, enter your Roboflow **private API key** and model ID `hackathon-flowers/1`.
+4. Upload a photo and press **Analyze flower image** (needs internet).
 
-## What you must submit at the end of Term 1
+## Who did what
 
-Assessment in this minor is **portfolio-based**. Your portfolio shows what you have learned and built during the semester. At the end of Term 1 you submit a portfolio that demonstrates your progress and sets you up for Term 2. It must include all four of the following:
+Together we thought of the project idea. We selected the best available datasets.  Sandra trained the model and Majed built the app. Sandra Made live demo and wrote the ethical refection while Majed wrote the readme and created thepresentation. 
 
-### 1. Proof of mandatory homework and assignments
-Evidence that you completed the required work for the **lecture class** and/or the **workshop class**. This can include submitted files, screenshots, notebook exports, or other documentation as instructed each week.
--> `Term 1/Week N/homework/`
 
-### 2. Proof of at least one live presentation
-Evidence that you presented in class when your hackathon group was selected. Include **slides**, and a **live demo**.
--> `Term 1/Week N/presentation/`
+## Sources
 
-### 3. Hackathon prototypes
-The **code** for each prototype you built for each Friday hackathon. Include the **slides** you made during that week as well.
--> `Term 1/Week N/hackathon/`
-
-### 4. Three individual learning goals for Term 2
-Three concrete goals you will work on in the next term, each with a written plan.
--> `Term 1/Learning Goals/`
-
-See [PORTFOLIO_CHECKLIST.md](PORTFOLIO_CHECKLIST.md) for a tick-box version of this list.
-
----
-
-## Individual learning goals - what your plan must include
-
-For each of your three learning goals, write a short plan that answers:
-
-- **What you will achieve** - state the goal clearly and concretely (what skill, output, or milestone?).
-- **Why you want to achieve it** - explain why these learning goals are of value to you.
-- **How you will achieve it** - what steps, activities, or methods will you use?
-- **Who or what you need** - people (peers, instructors, domain experts), tools, data, or resources required.
-- **Timeline** - when will you start, what are the milestones, and when do you expect to complete this goal? It is best if you make a Gantt chart to visualise your timeline.
-
-Choose goals that connect to the minor and to your Big Project direction in Term 2, but make sure they are of value to you specifically. Pick goals that you wanted to learn about during this minor but are not provided by us. **Be specific** - vague goals are hard to assess and harder to achieve.
-
-Templates and a Gantt-chart guide are waiting for you in [`Term 1/Learning Goals/`](Term%201/Learning%20Goals/).
-
----
-
-## Rules of thumb
-
-- **Commit as you go.** A weekly commit history is itself proof of progress.
-- **Write down what you did and why.** Code without explanation is hard to assess. Every week's `README.md` asks you a few short questions - answer them.
-- **Never commit secrets.** No API keys, tokens or passwords in this repo. Put them in a `.env` file (already git-ignored) and commit a `.env.example` with the key *names* only. If you leak a key, revoke it immediately.
-- **Do not commit huge files.** GitHub blocks files over 100 MB. For big datasets, models or videos: link to them instead, or upload the video somewhere and link it.
-- **Credit your pair.** Hackathons are done in pairs - name your partner and say who did what.
-- **Be honest about AI use.** You are allowed (and expected) to use AI tools. Say which ones you used and what you changed yourself.
-
----
-
-## Getting help
-
-Stuck on git? Run `git status` first, then ask. Something unclear in this template? Ask your instructor - do not guess and hand in nothing.
+1. Reemer, M. (2018). *Basisrapport voor de Rode Lijst Bijen*, EIS2018-06, via [review on natuurtijdschriften.nl](https://natuurtijdschriften.nl/pub/1025031/HYM2018016001030.pdf)
+2. European Commission (24 Jan 2023). [Commission boosts action on pollinators](https://ireland.representation.ec.europa.eu/news-and-events/news/food-security-and-ecosystem-resilience-european-commission-boosts-action-pollinators-2023-01-24_en)
+3. United Nations. [SDG target 15.5](https://metadata.un.org/sdg/15.5?lang=ar)
+4. iNaturalist Help. [How do licenses work on iNaturalist?](https://help.inaturalist.org/en/support/solutions/articles/151000173511)
+5. Roboflow project `hackathon-flowers` v1: COCO dataset export (29 Oct 2026) and test-set metrics
+6. Roboflow. [RF-DETR documentation](https://rfdetr.roboflow.com)
+7. Gemeente Den Haag. [Stadsnatuur beschermen en versterken](https://www.denhaag.nl/nl/natuur-en-milieu/groen-en-bomen/stadsnatuur-beschermen-en-versterken/)
+8. Rekenkamer Den Haag (2025). [Koers op Groen](https://www.rekenkamerdenhaag.nl/wp-content/uploads/2025/09/RIS323316-Raadsvoorstel-rekenkameronderzoek-Koers-op-Groen.pdf)
+9. VNG (2025). [Factsheet ecologisch bermbeheer](https://vng.nl/sites/default/files/2025-01/factsheet-ecologisch-bermbeheer.pdf), citing Vlinderstichting 2024
