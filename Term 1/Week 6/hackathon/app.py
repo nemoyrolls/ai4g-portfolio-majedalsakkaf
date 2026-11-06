@@ -44,6 +44,13 @@ kinds = st.sidebar.multiselect("Voices", ["news", "public"], default=["news", "p
                                format_func=lambda k: "News media" if k == "news" else "Public (Bluesky)")
 model = st.sidebar.radio("Model", ["main", "cmp"],
                          format_func=lambda m: "XLM-RoBERTa (main, 3 classes)" if m == "main" else "RobBERT Dutch (comparison, 2 classes)")
+measure = st.sidebar.radio(
+    "Measure", ["share", "mood"],
+    format_func=lambda m: "% negative items (recommended)" if m == "share" else "Average mood (−1 … +1)",
+    help="The honest test showed the main model calls many negative items 'neutral', which pulls the "
+         "average mood towards 0. When it does say 'negative', it was right every time. So the share of "
+         "negative items is the more trustworthy signal. See eval/RESULTS.md.",
+)
 min_n = st.sidebar.number_input("Hide points based on fewer than … items", 1, 50, 5)
 
 last_run = pd.to_datetime(runs["started_at"]).max() if len(runs) else None
@@ -54,7 +61,14 @@ if last_run is not None:
 
 # ---------------- Filter ----------------
 since = datetime.now(timezone.utc) - timedelta(days=days)
-mood_col = f"{model}_mood"
+# "signal" is what every chart below shows: either % negative items or the average mood.
+if measure == "share":
+    df["signal"] = (df[f"{model}_label"] == "negative") * 100.0
+    SIG_TITLE, SIG_DOMAIN, SIG_FMT, SIG_REF = "% negative items", [0, 100], ".0f", 50
+else:
+    df["signal"] = df[f"{model}_mood"]
+    SIG_TITLE, SIG_DOMAIN, SIG_FMT, SIG_REF = "Mood (−1 negative … +1 positive)", [-1, 1], "+.2f", 0
+mood_col = "signal"
 view = df[(df["published_at"] >= since) & (df["kind"].isin(kinds))].copy()
 freq = "D" if bucket == "day" else "W-MON"
 view["period"] = view["published_at"].dt.tz_convert(None).dt.to_period(freq[0]).dt.start_time
@@ -80,9 +94,11 @@ for col, name in zip(cols, config.LINES):
     delta = (recent[mood_col].mean() - older[mood_col].mean()) if len(recent) and len(older) else None
     col.metric(
         f"{name}{' 🔌' if config.LINES[name]['side'] == 'bottleneck' else ''}",
-        f"{sub[mood_col].mean():+.2f}" if len(sub) else "–",
-        f"{delta:+.2f} vs first half" if delta is not None and pd.notna(delta) else None,
-        help=f"{len(sub)} items. Mood = P(positive) − P(negative), from −1 to +1.",
+        f"{sub[mood_col].mean():{SIG_FMT}}{'%' if measure == 'share' else ''}" if len(sub) else "–",
+        f"{delta:{'+.0f' if measure == 'share' else '+.2f'}}{' pts' if measure == 'share' else ''} vs first half" if delta is not None and pd.notna(delta) else None,
+        delta_color="inverse" if measure == "share" else "normal",
+        help=f"{len(sub)} items. " + ("Share of items the model labels negative." if measure == "share"
+                                      else "Mood = P(positive) − P(negative), from −1 to +1."),
     )
 
 # ---------------- Mood over time ----------------
@@ -91,19 +107,26 @@ agg = (view.groupby(["period", "line"])
        .reset_index())
 agg = agg[agg["n"] >= min_n]
 
-st.subheader(f"Mood per {bucket}")
+st.subheader(f"{SIG_TITLE.split(' (')[0]} per {bucket}")
 st.caption("Each dot is one period. Hover to see how many items it is based on. "
            "Green measures in colour, the grid bottleneck in grey-blue.")
+
+# Warn about periods when the collector was not running: lines there jump between distant points.
+run_times = pd.to_datetime(runs["started_at"], utc=True).sort_values()
+gaps = [(a, b) for a, b in zip(run_times, run_times.iloc[1:]) if b - a > pd.Timedelta(hours=24) and b >= since]
+for a, b in gaps:
+    st.info(f"The collector was not running from {a:%d %b} to {b:%d %b}. Items from that period were only "
+            "partly picked up afterwards, so straight lines across it are not real trends.", icon="ℹ️")
 color = alt.Color("line:N", title=None,
                   scale=alt.Scale(domain=list(LINE_COLORS), range=list(LINE_COLORS.values())))
 base = alt.Chart(agg).encode(
     x=alt.X("period:T", title=None),
-    y=alt.Y("mood:Q", title="Mood (−1 negative … +1 positive)", scale=alt.Scale(domain=[-1, 1])),
+    y=alt.Y("mood:Q", title=SIG_TITLE, scale=alt.Scale(domain=SIG_DOMAIN)),
     color=color,
     tooltip=[alt.Tooltip("period:T", title=bucket), "line:N",
-             alt.Tooltip("mood:Q", format="+.2f"), alt.Tooltip("n:Q", title="items")],
+             alt.Tooltip("mood:Q", title=SIG_TITLE, format=SIG_FMT), alt.Tooltip("n:Q", title="items")],
 )
-zero = alt.Chart(pd.DataFrame({"y": [0]})).mark_rule(color="#999", strokeDash=[4, 4]).encode(y="y:Q")
+zero = alt.Chart(pd.DataFrame({"y": [SIG_REF]})).mark_rule(color="#999", strokeDash=[4, 4]).encode(y="y:Q")
 st.altair_chart(
     (zero + base.mark_line(strokeWidth=2.5) + base.mark_circle().encode(size=alt.Size("n:Q", legend=None)))
     .properties(height=380),
@@ -123,16 +146,16 @@ with c1:
     )
 with c2:
     st.subheader("Media vs public")
-    st.caption("Average mood per line, news headlines vs Bluesky posts.")
+    st.caption(f"{SIG_TITLE} per line, news headlines vs Bluesky posts.")
     mp = (df[df["published_at"] >= since].groupby(["line", "kind"])
           .agg(mood=(mood_col, "mean"), n=("id", "count")).reset_index())
     mp["voice"] = mp["kind"].map({"news": "News media", "public": "Public (Bluesky)"})
     st.altair_chart(
         alt.Chart(mp).mark_bar().encode(
-            y=alt.Y("line:N", title=None), x=alt.X("mood:Q", title="mood", scale=alt.Scale(domain=[-1, 1])),
+            y=alt.Y("line:N", title=None), x=alt.X("mood:Q", title=SIG_TITLE, scale=alt.Scale(domain=SIG_DOMAIN)),
             yOffset="voice:N",
             color=alt.Color("voice:N", title=None, scale=alt.Scale(range=["#8c8c8c", "#2a9d8f"])),
-            tooltip=["line:N", "voice:N", alt.Tooltip("mood:Q", format="+.2f"), "n:Q"],
+            tooltip=["line:N", "voice:N", alt.Tooltip("mood:Q", title=SIG_TITLE, format=SIG_FMT), "n:Q"],
         ).properties(height=260),
         use_container_width=True,
     )
@@ -146,8 +169,9 @@ if periods:
     period_pick = d2.selectbox(bucket.capitalize(), periods, format_func=lambda p: pd.Timestamp(p).strftime("%a %d %b %Y"))
     order = d3.radio("Sort", ["most negative", "most positive"])
     items = view[(view["line"] == line_pick) & (view["period"] == period_pick)]
-    items = items.sort_values(mood_col, ascending=(order == "most negative"))
-    st.caption(f"{len(items)} items · average mood {items[mood_col].mean():+.2f}")
+    items = items.sort_values("main_mood", ascending=(order == "most negative"))
+    st.caption(f"{len(items)} items · {(items['main_label'] == 'negative').mean():.0%} negative · "
+               f"average mood {items['main_mood'].mean():+.2f}")
     st.dataframe(
         items[["published_at", "kind", "source", "text", "main_label", "main_mood", "cmp_label", "url"]]
         .rename(columns={"published_at": "time (UTC)", "main_label": "XLM-R", "main_mood": "XLM-R mood",
