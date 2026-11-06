@@ -1,8 +1,12 @@
-websockets
-transformers
-torch          # install the CPU version: pip install torch --index-url https://download.pytorch.org/whl/cpu
-streamlit
-pandas
-altair
-vaderSentiment
-openpyxl
+# Collector + models
+torch==2.14.1
+transformers==5.19.0
+sentencepiece==0.2.2
+protobuf==7.36.2
+feedparser==6.0.14
+requests==2.34.2
+# Dashboard + honest test
+pandas==3.0.6
+streamlit==1.65.0
+altair==6.3.0
+scikit-learn==1.9.1
