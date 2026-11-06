@@ -67,7 +67,7 @@ post links, show the number of items behind every point, hide thin points, show 
 
 ### Checklist
 - [x] Prototype code (or export / workflow file) is in `hackathon/`
-- [ ] This week's slides are in `hackathon/`
+- [x] This week's slides are in `hackathon/slides/`
 - [x] The prototype actually runs, and I wrote down how to run it
 - [x] Ethical reflection written above
 
