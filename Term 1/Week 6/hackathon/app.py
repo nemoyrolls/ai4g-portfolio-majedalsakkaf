@@ -26,13 +26,17 @@ LINE_COLORS = {
 def load():
     df = pd.read_csv(config.ITEMS_CSV)
     runs = pd.read_csv(config.RUNS_CSV)
+    # Only items found by automatic rounds count. Manual test rounds stay in the file but are not shown.
+    runs = runs[runs["where"] == "github-actions"]
+    manual = (~df["collected_at"].isin(runs["started_at"])).sum()
+    df = df[df["collected_at"].isin(runs["started_at"])].copy()
     df["published_at"] = pd.to_datetime(df["published_at"], utc=True)
     df["collected_at"] = pd.to_datetime(df["collected_at"], utc=True)
     df["line"] = df["lines"].str.split(",")
-    return df.explode("line"), runs
+    return df.explode("line"), runs, manual
 
 
-df, runs = load()
+df, runs, manual_items = load()
 
 # ---------------- Sidebar ----------------
 st.sidebar.title("🌱 Green Transition Pulse")
@@ -55,7 +59,8 @@ min_n = st.sidebar.number_input("Hide points based on fewer than … items", 1, 
 
 last_run = pd.to_datetime(runs["started_at"]).max() if len(runs) else None
 st.sidebar.markdown("---")
-st.sidebar.metric("Items stored", f"{df['id'].nunique():,}")
+st.sidebar.metric("Items collected automatically", f"{df['id'].nunique():,}")
+st.sidebar.caption(f"{manual_items:,} items from manual test rounds are not counted.")
 if last_run is not None:
     st.sidebar.caption(f"Last collection: {last_run:%d %b %H:%M} UTC · {len(runs)} rounds so far")
 

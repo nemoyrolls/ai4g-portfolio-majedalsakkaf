@@ -70,7 +70,7 @@ search noise such as *sociale isolatie* (social isolation).
 ## 5. How it works
 
 ```
- every hour (GitHub Actions)
+ scheduled hourly (GitHub Actions)
         │
         ▼
  sources.py ── Google News NL · Bluesky (nl) · 4 RSS feeds
@@ -244,15 +244,16 @@ on its own.
 
 ## 11. Data collected and how long it ran
 
-As of 7 Nov 2026: **2,360 items** (1,758 Bluesky posts, 602 news items) in `data/items.csv`.
-Per line: solar 799 · grid 555 · heat pump 476 · EV charging 397 · insulation 380. NOS and Tweakers gave no
-matching items so far; almost all news comes via Google News.
+**Only items found by automatic rounds count.** As of 8 Nov 2026, 10:20 UTC: **79 items** (48 news, 31 Bluesky posts)
+from **7 GitHub Actions rounds** since 7 Nov, 00:28 UTC (the first was started with the "Run workflow" button, the other 6 by the schedule). The dashboard shows only these.
 
-`data/runs.csv` lists every collection round with its time and whether it ran on a laptop or on GitHub Actions.
+`data/items.csv` also holds 2,360 items from 3 manual test rounds on my laptop (12 Oct and 6 Nov). They are kept
+for traceability, but are not counted or shown. `data/runs.csv` lists every round with its time and where it ran
+(`github-actions` or `laptop`), and each item's `collected_at` links it to its round.
 
-**Honest note on the timeline:** the collector first ran by hand on 12 October 2026 and was then **not running
-until 6 November**. For this resubmission it runs every hour on GitHub Actions. Items published during the gap were
-partly picked up afterwards: Bluesky search returns the latest 100 posts per term, and Google News the last 7 days.
+**Honest note on the timing:** the workflow is scheduled every hour, but GitHub delays scheduled jobs. In the first
+34 hours it ran 7 times, with gaps of up to 7.8 hours. Each round looks back over recent items (Bluesky: the latest
+100 posts per term; Google News: the last 7 days), so a delay should lose little, but the rounds are not hourly.
 Each item keeps both `published_at` (when it was written) and `collected_at` (when we found it).
 
 ## 12. How to run
@@ -265,7 +266,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 
 **Continuous collection:** `.github/workflows/green-pulse.yml` (in the repository root) runs `collect.py` every
-hour at :17 and commits the new rows. It can also be started by hand from the GitHub **Actions** tab ("Run workflow").
+hour at :17 (GitHub often runs it later) and commits the new rows. It can also be started by hand from the GitHub **Actions** tab ("Run workflow").
 
 **Honest test:** `cd eval && ../.venv/bin/python evaluate.py` recomputes `RESULTS.md` and `test_table.csv`
 from `labels.csv`.
