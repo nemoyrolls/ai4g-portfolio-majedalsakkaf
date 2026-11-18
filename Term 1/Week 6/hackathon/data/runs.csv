@@ -42,3 +42,4 @@ started_at,where,fetched,new_items,errors
 2026-11-17T03:53:47Z,github-actions,2273,4,gnews:thuisbatterij: 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=thuisbatterij+when%3A7d&hl=nl&gl=NL&ceid=NL%3Anl | gnews:snellader: 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=snellader+when%3A7d&hl=nl&gl=NL&ceid=NL%3Anl | gnews:stroomnet vol: 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=stroomnet+vol+when%3A7d&hl=nl&gl=NL&ceid=NL%3Anl
 2026-11-17T13:24:35Z,github-actions,2420,52,
 2026-11-17T22:24:49Z,github-actions,2421,26,
+2026-11-18T04:20:07Z,github-actions,2422,4,
