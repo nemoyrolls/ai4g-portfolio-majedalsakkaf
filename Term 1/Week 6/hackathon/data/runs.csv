@@ -50,3 +50,4 @@ started_at,where,fetched,new_items,errors
 2026-11-19T21:32:30Z,github-actions,2312,33,gnews:zonnepanelen: 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=zonnepanelen+when%3A7d&hl=nl&gl=NL&ceid=NL%3Anl
 2026-11-20T03:14:11Z,github-actions,2419,6,
 2026-11-20T11:39:22Z,github-actions,2404,37,
+2026-11-20T20:17:08Z,github-actions,2414,28,
