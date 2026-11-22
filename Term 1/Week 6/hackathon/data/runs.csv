@@ -56,3 +56,4 @@ started_at,where,fetched,new_items,errors
 2026-11-21T17:31:27Z,github-actions,2342,17,gnews:thuisbatterij: 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=thuisbatterij+when%3A7d&hl=nl&gl=NL&ceid=NL%3Anl
 2026-11-21T23:15:51Z,github-actions,2417,6,
 2026-11-22T03:13:33Z,github-actions,2439,1,
+2026-11-22T11:22:53Z,github-actions,2417,23,
