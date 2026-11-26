@@ -68,3 +68,4 @@ started_at,where,fetched,new_items,errors
 2026-11-25T22:31:41Z,github-actions,2452,38,gnews:hybride warmtepomp: 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=hybride+warmtepomp+when%3A7d&hl=nl&gl=NL&ceid=NL%3Anl | gnews:vloerisolatie: 429 Client Error: Too Many Requests for url: https://news.google.com/rss/search?q=vloerisolatie+when%3A7d&hl=nl&gl=NL&ceid=NL%3Anl
 2026-11-26T05:03:02Z,github-actions,2497,12,
 2026-11-26T15:14:16Z,github-actions,2489,72,
+2026-11-26T23:52:27Z,github-actions,2504,34,
